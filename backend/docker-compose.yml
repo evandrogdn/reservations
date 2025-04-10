@@ -1,0 +1,35 @@
+networks:
+  digiliza_reservation:
+
+volumes:
+  digiliza_database:
+
+services:
+  app:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: api
+    volumes:
+      - .:/var/www
+    ports:
+      - "8000:8000"
+    depends_on:
+      - database
+    networks:
+      - digiliza_reservation
+
+  database:
+    image: postgres:15
+    container_name: database
+    restart: always
+    environment:
+      POSTGRES_DB: reservations
+      POSTGRES_USER: digiliza
+      POSTGRES_PASSWORD: reservationstest
+    volumes:
+      - digiliza_database:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - digiliza_reservation
