@@ -10,11 +10,24 @@ use App\Models\Reservation;
 class ReservationController extends Controller
 {
     /**
-     * @return Collection<int, Reservation>
+     * @param Request $request
+     * @return JsonResponse
      */
-    public function index(): Collection
+    public function index(Request $request): JsonResponse
     {
-        return Reservation::with('tables')->get();
+        $query = Reservation::query();
+
+        if ($request->has('client_name')) {
+            $query->where('client_name', 'like', '%' . $request->input('client_name') . '%');
+        }
+        if ($request->has('start_date')) {
+            $query->where('reservation_start', '>=', $request->input('start_date'));
+        }
+        if ($request->has('end_date')) {
+            $query->where('reservation_end', '<=', $request->input('end_date'));
+        }
+
+        return response()->json($query->get());
     }
 
     /**
