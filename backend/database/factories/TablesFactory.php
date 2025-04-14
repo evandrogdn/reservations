@@ -17,7 +17,8 @@ class TablesFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'identification' => strtoupper($this->faker->unique()->bothify('MESA-###')),
+            'places' => $this->faker->numberBetween(2, 10),
         ];
     }
 }
