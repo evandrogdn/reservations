@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue';
 import api from '@/services/axios';
+import TableModal from '@/components/TableModal.vue';
 
 interface Table {
   id: number;
@@ -14,12 +15,7 @@ const error = ref('');
 
 // controls to show modal
 const showModal = ref(false);
-const isEdit = ref(false);
-const form = ref<Table>({
-  id: null,
-  identification: '',
-  places: 0,
-});
+const selectedTable = ref<Table | null>(null);
 
 const fetchTables = async () => {
   loading.value = true;
@@ -36,20 +32,14 @@ const fetchTables = async () => {
 };
 
 const addTable = () => {
-  isEdit.value = false;
-  form.value = {
-    id: null,
-    identification: '',
-    places: 0,
-  };
+  selectedTable.value = null;
   showModal.value = true;
 }
 
 const editTable = (id: number) => {
   const table = tables.value.find((table) => table.id === id);
   if (table) {
-    form.value = { ...table };
-    isEdit.value = true;
+    selectedTable.value = table;
     showModal.value = true;
   }
 };
@@ -72,25 +62,6 @@ const deleteTable = async (id: number) => {
 
 const closeModal = () => {
   showModal.value = false;
-};
-
-const submitTable = async () => {
-  loading.value = true;
-  error.value = '';
-
-  try {
-    if (isEdit.value) {
-      await api.put(`/tables/${form.value.id}`, form.value);
-    } else {
-      await api.post('/tables', form.value);
-    }
-    await fetchTables();
-    closeModal();
-  } catch (err: any) {
-    error.value = err.message || 'Erro inesperado ao salvar a mesa';
-  } finally {
-    loading.value = false;
-  }
 };
 
 onMounted(() => {
@@ -242,7 +213,7 @@ onMounted(() => {
   <div class="tables-container">
     <div class="header">
       <h2>Listagem de Mesas</h2>
-      <button class="add-btn" @click="addTable">+ Adicionar Mesa</button>
+      <button class="add-btn" @click.prevent="addTable">+ Adicionar Mesa</button>
     </div>
 
     <div v-if="loading" class="status">Carregando mesas...</div>
@@ -271,18 +242,11 @@ onMounted(() => {
     </table>
 
     <!-- modal to edit and add a table -->
-    <div v-if="showModal" class="modal-overlay">
-      <div class="modal">
-        <h3>{{isEdit ? 'Editar mesa': 'Nova mesa'}}</h3>
-        <form @submit.prevent="submitTable">
-          <input type="text" v-model="form.identification" placeholder="Identificação" required />
-          <input type="number" v-model="form.places" placeholder="Lugares" required />
-          <div class="modal-actions">
-            <button type="submit">{{ isEdit ? 'Atualizar' : 'Adicionar'}}</button>
-            <button type="button" @click="closeModal">Fechar</button>
-          </div>
-        </form>
-      </div>
-    </div>
+    <TableModal
+      :visible="showModal"
+      :table="selectedTable"
+      @close="showModal = false"
+      @refresh="fetchTables"
+    />
   </div>
 </template>
