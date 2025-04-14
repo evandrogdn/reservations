@@ -232,6 +232,14 @@ tr:hover {
   border-radius: 6px;
   cursor: pointer;
 }
+
+#filterIdentification {
+  width: 40%
+}
+
+#filterPlaces {
+  width: 20%;
+}
 </style>
 
 <template>
@@ -242,8 +250,8 @@ tr:hover {
     </div>
 
     <div class="filters">
-      <input v-model="filterIdentification" type="text" placeholder="Filtrar por identificação" />
-      <input v-model="filterPlaces" type="number" placeholder="Filtrar por lugares" />
+      <input id="filterIdentification" v-model="filterIdentification" type="text" placeholder="Filtrar por identificação" />
+      <input id="filterPlaces" v-model="filterPlaces" type="number" placeholder="Filtrar por lugares" />
       <button @click="applyFilters">Filtrar</button>
       <button @click="resetFilters">Limpar</button>
     </div>
@@ -256,7 +264,7 @@ tr:hover {
       <thead>
         <tr>
           <th>ID</th>
-          <th>Identificacao</th>
+          <th>Identificação</th>
           <th>Lugares</th>
           <th>Ações</th>
         </tr>

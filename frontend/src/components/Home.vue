@@ -28,25 +28,22 @@ const logout = () => {
 .layout {
   display: flex;
   height: 100vh;
+  width: 100%;
 }
 
 .sidebar {
-  width: 200px;
+  width: 300px;
   background-color: #2c3e50;
   padding: 1rem;
   display: flex;
   flex-direction: column;
+  text-align: left;
 }
 
 .sidebar a {
   color: #ecf0f1;
   text-decoration: none;
   margin-bottom: 1rem;
-}
-
-.sidebar a.router-link-active {
-  font-weight: bold;
-  color: #42b983;
 }
 
 .logout-btn {

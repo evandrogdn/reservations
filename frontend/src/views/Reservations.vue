@@ -226,6 +226,15 @@ tr:hover {
   border-radius: 6px;
   cursor: pointer;
 }
+
+#filterClient {
+  width: 50%;
+}
+
+.filterDate {
+  width: 13%;
+}
+
 </style>
 
 <template>
@@ -236,9 +245,9 @@ tr:hover {
     </div>
 
     <div class="filters">
-      <input v-model="filterClientName" type="text" placeholder="Cliente" />
-      <input v-model="filterReservationStart" type="date" placeholder="Data de Início" />
-      <input v-model="filterReservationEnd" type="date" placeholder="Data de Fim" />
+      <input id="filterClient" v-model="filterClientName" type="text" placeholder="Cliente" />
+      <input class="filterDate" v-model="filterReservationStart" type="date" placeholder="Data de Início" />
+      <input class="filterDate" v-model="filterReservationEnd" type="date" placeholder="Data de Fim" />
       <button @click="applyFilters">Filtrar</button>
       <button @click="resetFilters">Limpar Filtros</button>
     </div>
@@ -247,13 +256,14 @@ tr:hover {
     <div v-if="error" class="error">{{ error }}</div>
     <div v-if="!loading && reservations.length === 0" class="no-data">Nenhuma reserva encontrada.</div>
 
-    <table>
+    <table v-else class="reservations-list">
       <thead>
         <tr>
           <th>ID</th>
           <th>Cliente</th>
           <th>Mesa</th>
           <th>Telefone</th>
+          <th>Convidados</th>
           <th>Entrada</th>
           <th>Saída</th>
           <th>Ações</th>
@@ -265,6 +275,7 @@ tr:hover {
           <td>{{ reservation.client_name }}</td>
           <td>{{ reservation.table_id }}</td>
           <td>{{ maskPhone(reservation.phone_contact) }}</td>
+          <td>{{ reservation.guests }}</td>
           <td>{{ formatDate(reservation.reservation_start) }}</td>
           <td>{{ formatDate(reservation.reservation_end) }}</td>
           <td class="actions">
