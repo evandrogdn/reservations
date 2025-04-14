@@ -5,15 +5,25 @@ namespace App\Http\Controllers;
 use App\Models\Tables;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 
 class TablesController extends Controller
 {
     /**
      * @return Collection<int, Tables>
      */
-    public function index(): Collection
+    public function index(Request $request): JsonResponse
     {
-        return Tables::all();
+        $query = Tables::query();
+
+        if ($request->has('identification')) {
+            $query->where('identification', 'like', '%' . $request->input('identification') . '%');
+        }
+        if ($request->has('places')) {
+            $query->where('places', '>=', $request->input('places'));
+        }
+
+        return response()->json($query->get());
     }
 
     /**
