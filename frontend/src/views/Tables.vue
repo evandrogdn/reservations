@@ -41,7 +41,6 @@ const fetchTables = async () => {
     if (filterIdentification.value) {
       params.identification = filterIdentification.value;
     }
-
     if (filterPlaces.value) {
       params.places = filterPlaces.value;
     }
@@ -243,10 +242,10 @@ tr:hover {
     </div>
 
     <div class="filters">
-      <input type="text" placeholder="Filtrar por identificação" />
-      <input type="number" placeholder="Filtrar por lugares" />
-      <button @click.prevent="applyFilters">Filtrar</button>
-      <button @click.prevent="resetFilters">Limpar</button>
+      <input v-model="filterIdentification" type="text" placeholder="Filtrar por identificação" />
+      <input v-model="filterPlaces" type="number" placeholder="Filtrar por lugares" />
+      <button @click="applyFilters">Filtrar</button>
+      <button @click="resetFilters">Limpar</button>
     </div>
 
     <div v-if="loading" class="status">Carregando mesas...</div>
