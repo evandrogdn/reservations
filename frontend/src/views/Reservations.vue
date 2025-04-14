@@ -24,8 +24,6 @@ const filterClientName = ref('');
 const filterReservationStart = ref('');
 const filterReservationEnd = ref('');
 
-const filtersApplied = ref(false);
-
 // modal
 const showModal = ref(false);
 const selectedReservation = ref<Reservation | null>(null);
@@ -245,7 +243,7 @@ tr:hover {
       <button @click="resetFilters">Limpar Filtros</button>
     </div>
 
-    <div v-if="loading" class="loading">Carregando...</div>
+    <div v-if="loading" class="loading">Carregando reservas...</div>
     <div v-if="error" class="error">{{ error }}</div>
     <div v-if="!loading && reservations.length === 0" class="no-data">Nenhuma reserva encontrada.</div>
 

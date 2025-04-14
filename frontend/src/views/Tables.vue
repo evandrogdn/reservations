@@ -13,16 +13,40 @@ const tables = ref<Table[]>([]);
 const loading = ref(false);
 const error = ref('');
 
-// controls to show modal
+// filters
+const filterIdentification = ref('');
+const filterPlaces = ref('');
+
+// modal
 const showModal = ref(false);
 const selectedTable = ref<Table | null>(null);
+
+const applyFilters = () => {
+  fetchTables();
+}
+
+const resetFilters = () => {
+  filterIdentification.value = '';
+  filterPlaces.value = '';
+  fetchTables();
+}
 
 const fetchTables = async () => {
   loading.value = true;
   error.value = '';
 
   try {
-    const response = await api.get<Table[]>('/tables');
+    const params: any = {};
+
+    if (filterIdentification.value) {
+      params.identification = filterIdentification.value;
+    }
+
+    if (filterPlaces.value) {
+      params.places = filterPlaces.value;
+    }
+
+    const response = await api.get<Table[]>('/tables', { params });
     tables.value = response.data;
   } catch (err: any) {
     error.value = err.message || 'Erro inesperado ao carregar as mesas';
@@ -43,6 +67,17 @@ const editTable = (id: number) => {
     showModal.value = true;
   }
 };
+
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('pt-BR', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+}
 
 const deleteTable = async (id: number) => {
   if (confirm('Tem certeza que deseja excluir esta mesa?')) {
@@ -70,53 +105,41 @@ onMounted(() => {
 </script>
 
 <style scoped>
-  .tables-container {
-    max-width: 900px;
-    margin: 2rem auto;
-    padding: 1rem;
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 0 12px rgba(0, 0, 0, 0.05);
-  }
+.reservations {
+  padding: 1rem;
+}
 
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-  }
+.reservations h2 {
+  margin-bottom: 1rem;
+}
 
-  .add-btn {
-    background-color: #42b983;
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    cursor: pointer;
-  }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
+}
 
-  .add-btn:hover {
-    background-color: #369d72;
-  }
+th,
+td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+  color: #000000;
+}
 
-  .tables-list {
-    width: 100%;
-    border-collapse: collapse;
-  }
+th {
+  background-color: #f4f4f4;
+  font-weight: 600;
+}
 
-  .tables-list th,
-  .tables-list td {
-    border: 1px solid #eee;
-    padding: 0.75rem;
-    text-align: left;
-    color: #000000;
-  }
+tr:hover {
+  background-color: #f9f9f9;
+}
 
-  .tables-list th {
-    background-color: #f9f9f9;
-  }
-
-  .actions {
+.actions {
     display: flex;
     gap: 0.5rem;
   }
@@ -147,66 +170,69 @@ onMounted(() => {
   .delete-btn:hover {
     background-color: #c0392b;
   }
-
-  .modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.4);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
+  .table-info {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    color: #555;
   }
-
-  .modal {
-    background: white;
-    padding: 2rem;
-    border-radius: 12px;
-    width: 100%;
-    max-width: 400px;
-    box-shadow: 0 0 12px rgba(0, 0, 0, 0.2);
+  .loading {
+    text-align: center;
+    font-size: 1.2rem;
+    color: #555;
   }
-
-  .modal h3 {
-    margin-bottom: 1.5rem;
-    color: #000000;
+  .error {
+    color: red;
+    text-align: center;
+    font-size: 1rem;
   }
-
-  .modal input,
-  .modal select {
-    width: 100%;
-    padding: 0.6rem;
-    margin-bottom: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    background: #f9f9f9;
-    color: #000000;
+  .no-data {
+    text-align: center;
+    font-size: 1.2rem;
+    color: #555;
   }
-
-  .modal-actions {
+  .header {
     display: flex;
     justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
   }
-
-  .modal-actions button {
-    padding: 0.5rem 1rem;
+  .add-btn {
+    background-color: #42b983;
+    color: white;
     border: none;
-    border-radius: 6px;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
     cursor: pointer;
   }
-
-  .modal-actions button:first-child {
+  .add-btn:hover {
     background-color: #369d72;
-    color: white;
+  }
+  .actions {
+    display: flex;
+    gap: 0.5rem;
   }
 
-  .modal-actions button:last-child {
-    background-color: #e74c3c;
-  }
+  .filters {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
 
+.filters input {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #f9f9f9;
+  color : #333;
+}
+.filters button {
+  padding: 0.5rem 1rem;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
 </style>
 
 <template>
@@ -216,8 +242,16 @@ onMounted(() => {
       <button class="add-btn" @click.prevent="addTable">+ Adicionar Mesa</button>
     </div>
 
+    <div class="filters">
+      <input type="text" placeholder="Filtrar por identificação" />
+      <input type="number" placeholder="Filtrar por lugares" />
+      <button @click.prevent="applyFilters">Filtrar</button>
+      <button @click.prevent="resetFilters">Limpar</button>
+    </div>
+
     <div v-if="loading" class="status">Carregando mesas...</div>
     <div v-else-if="error" class="status error">{{ error }}</div>
+    <div v-if="!loading && tables.length === 0" class="no-data">Nenhuma mesa encontrada.</div>
 
     <table v-else class="tables-list">
       <thead>
@@ -240,6 +274,11 @@ onMounted(() => {
         </tr>
       </tbody>
     </table>
+
+    <div v-if="!loading && tables.length > 0" class="table-info">
+      <p>Total de Mesas: {{ tables.length }}</p>
+      <p>Última atualização: {{ formatDate(new Date().toISOString()) }}</p>
+    </div>
 
     <!-- modal to edit and add a table -->
     <TableModal
