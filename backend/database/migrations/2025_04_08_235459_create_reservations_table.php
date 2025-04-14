@@ -18,9 +18,12 @@ return new class extends Migration
             $table->string('phone_contact')->nullable();
             $table->string('email_contact')->nullable();
             $table->integer('guests');
-            $table->dateTime('reservation_start')->unique();
-            $table->dateTime('reservation_end')->unique();
+            $table->dateTime('reservation_start');
+            $table->dateTime('reservation_end');
             $table->timestamps();
+
+            $table->unique(['table_id', 'reservation_start', 'reservation_end'], 'unique_table_reservation');
+            $table->index(['reservation_start', 'reservation_end'], 'index_reservation_dates');
         });
     }
 
