@@ -9,8 +9,6 @@ const props = defineProps<{
   reservation?: any;
 }>();
 
-const isEdit = !!props.reservation;
-
 const form = reactive({
   client_name: props.reservation?.client_name || '',
   table_id: props.reservation?.table_id || null,
@@ -54,7 +52,7 @@ const resetForm = () => {
 
 const submitForm = async () => {
   try {
-    if (isEdit) {
+    if (props.reservation?.id) {
       await api.put(`/reservations/${props.reservation?.id}`, form);
     } else {
       await api.post('/reservations', form);
@@ -141,12 +139,17 @@ label {
   text-align: left;
 }
 
+h2 {
+  margin-bottom: 1rem;
+  color: #333;
+}
+
 </style>
 
 <template>
   <div class="modal-overlay" v-if="visible">
     <div class="modal-content">
-      <h2>{{ isEdit ? 'Editar Reserva' : 'Criar Reserva' }}</h2>
+      <h2>Controle de reservas</h2>
       <label for="client_name">Nome do Cliente:</label>
       <input type="text" id="client_name" v-model="form.client_name" />
 
@@ -169,7 +172,7 @@ label {
       <input type="datetime-local" id="reservation_end" v-model="form.reservation_end" />
 
       <div class="modal-actions">
-        <button @click.prevent="submitForm">{{ isEdit ? 'Salvar' : 'Criar' }}</button>
+        <button @click.prevent="submitForm">Salvar</button>
         <button @click.prevent="close">Cancelar</button>
       </div>
     </div>

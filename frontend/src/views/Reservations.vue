@@ -234,7 +234,7 @@ tr:hover {
   <div class="reservations">
     <div class="header">
       <h2>Listagem de Reservas</h2>
-      <button class="add-btn" @click="addReservation">+ Adicionar Mesa</button>
+      <button class="add-btn" @click.prevent="addReservation">+ Adicionar Mesa</button>
     </div>
 
     <div class="filters">
@@ -281,12 +281,12 @@ tr:hover {
       <p>Total de reservas: {{ reservations.length }}</p>
       <p>Última atualização: {{ formatDate(new Date().toISOString()) }}</p>
     </div>
-  </div>
 
-  <ReservationModal
-    :visible="showModal"
-    :reservation="selectedReservation"
-    @close="showModal = false"
-    @refresh="fetchReservations"
-  />
+    <ReservationModal
+      :visible="showModal"
+      :reservation="selectedReservation"
+      @close="showModal = false"
+      @refresh="fetchReservations"
+    />
+  </div>
 </template>
