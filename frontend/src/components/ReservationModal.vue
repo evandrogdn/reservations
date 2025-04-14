@@ -42,6 +42,16 @@ watch(
   }
 );
 
+const resetForm = () => {
+  form.client_name = '';
+  form.table_id = null;
+  form.phone_contact = '';
+  form.email_contact = '';
+  form.guests = null;
+  form.reservation_start = '';
+  form.reservation_end = '';
+};
+
 const submitForm = async () => {
   try {
     if (isEdit) {
@@ -51,12 +61,14 @@ const submitForm = async () => {
     }
     emit('refresh');
     emit('close');
+    resetForm();
   } catch (error) {
    alert(error || 'Ocorreu um erro inesperado ao salvar a reserva');
   }
 };
 
 const close = () => {
+  resetForm();
   emit('close');
 };
 </script>
