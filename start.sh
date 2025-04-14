@@ -1,7 +1,7 @@
 #!/bin/bash
 
-cd backend/ && docker-compose up -d
-cd ../frontend/ && docker-compose up -d
+cd backend/ && composer install --ignore-platform-reqs -o -n && docker-compose up -d
+cd ../frontend/ && npm install && docker-compose up -d
 cd ../
 
 docker exec -it api php artisan migrate:fresh --seed
