@@ -79,6 +79,8 @@ export default defineComponent({
   border: 1px solid #ccc;
   border-radius: 8px;
   font-size: 1rem;
+  background-color: #f9f9f9;
+  color: #333;
 }
 
 .login-box button {
