@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { reactive, watch, defineEmits } from 'vue';
 import api from '@/services/axios';
+import SelectTable from '@/components/SelectTable.vue';
 
 const emit = defineEmits(['close', 'refresh']);
 
@@ -154,7 +155,7 @@ h2 {
       <input type="text" id="client_name" v-model="form.client_name" />
 
       <label for="table_id">Mesa:</label>
-      <input type="number" id="table_id" v-model="form.table_id" />
+      <SelectTable v-model="form.table_id" />
 
       <label for="phone_contact">Telefone:</label>
       <input type="text" id="phone_contact" v-model="form.phone_contact" />
